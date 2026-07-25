@@ -8,7 +8,7 @@ Part of the `trakt-android` monorepo. Root rules apply — see
 - **Role**: phone app entry point. Hosts the main `NavHost`, the
   `MainActivity`, billing flow, and most user-facing feature screens.
 - **Plugin**: `com.android.application` + `kotlin.compose`
-  + `kotlin.serialization` + Firebase plugins.
+  + `kotlin.serialization`.
 - **Active areas (new code preferred here)**:
   - `Trakt/core/<feature>/` — feature folders (home, calendar,
     search, profile, billing). Each owns `Screen`, `State`,

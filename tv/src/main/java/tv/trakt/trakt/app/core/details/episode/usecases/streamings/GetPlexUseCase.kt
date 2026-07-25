@@ -1,15 +1,13 @@
 package tv.trakt.trakt.app.core.details.episode.usecases.streamings
 
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import timber.log.Timber
 import tv.trakt.trakt.app.core.plex.data.PlexRemoteDataSource
 import tv.trakt.trakt.app.core.shows.data.remote.ShowsRemoteDataSource
 import tv.trakt.trakt.app.core.sync.data.remote.episodes.EpisodesSyncRemoteDataSource
 import tv.trakt.trakt.app.core.sync.data.remote.shows.ShowsSyncRemoteDataSource
 import tv.trakt.trakt.common.BuildConfig
+import tv.trakt.trakt.common.config.AppConfig.PLEX_PLAY_ENABLED
 import tv.trakt.trakt.common.core.shows.data.local.ShowLocalDataSource
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.PLEX_PLAY_ENABLED
 import tv.trakt.trakt.common.helpers.extensions.getHttpCode
 import tv.trakt.trakt.common.model.MediaType
 import tv.trakt.trakt.common.model.Show
@@ -49,7 +47,7 @@ internal class GetPlexUseCase(
         episodeTraktId: TraktId,
         showTraktId: TraktId,
     ): PlexStreamResult? {
-        val isEnabled = Firebase.remoteConfig.getBoolean(PLEX_PLAY_ENABLED) || BuildConfig.DEBUG
+        val isEnabled = PLEX_PLAY_ENABLED || BuildConfig.DEBUG
         if (!isEnabled) {
             Timber.d("Plex play is disabled via remote config.")
             return null

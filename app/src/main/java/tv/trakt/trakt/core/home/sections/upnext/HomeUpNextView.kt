@@ -33,13 +33,11 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import org.koin.androidx.compose.koinViewModel
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_EMPTY_IMAGE_1
 import tv.trakt.trakt.common.core.home.model.UpNextItem
 import tv.trakt.trakt.common.core.home.model.UpNextMovie
 import tv.trakt.trakt.common.core.home.model.UpNextShow
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_EMPTY_IMAGE_1
 import tv.trakt.trakt.common.helpers.LoadingState.Done
 import tv.trakt.trakt.common.helpers.LoadingState.Idle
 import tv.trakt.trakt.common.helpers.LoadingState.Loading
@@ -240,7 +238,7 @@ internal fun HomeUpNextContent(
 
                             state.items.items?.isEmpty() == true -> {
                                 val imageUrl = remember {
-                                    Firebase.remoteConfig.getString(MOBILE_EMPTY_IMAGE_1).ifBlank { null }
+                                    MOBILE_EMPTY_IMAGE_1.ifBlank { null }
                                 }
                                 HomeEmptyView(
                                     text = stringResource(

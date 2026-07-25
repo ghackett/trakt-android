@@ -29,12 +29,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import org.koin.androidx.compose.koinViewModel
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_EMPTY_IMAGE_3
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_EMPTY_IMAGE_3
 import tv.trakt.trakt.common.helpers.LoadingState.Done
 import tv.trakt.trakt.common.helpers.LoadingState.Idle
 import tv.trakt.trakt.common.helpers.LoadingState.Loading
@@ -181,7 +179,7 @@ internal fun HomeUpcomingContent(
 
                             state.items?.isEmpty() == true -> {
                                 val imageUrl = remember {
-                                    Firebase.remoteConfig.getString(MOBILE_EMPTY_IMAGE_3).ifBlank { null }
+                                    MOBILE_EMPTY_IMAGE_3.ifBlank { null }
                                 }
                                 HomeEmptyView(
                                     text = stringResource(R.string.text_cta_upcoming),

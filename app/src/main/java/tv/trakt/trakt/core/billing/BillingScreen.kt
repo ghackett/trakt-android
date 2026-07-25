@@ -60,10 +60,8 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.billingclient.api.ProductDetails
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import tv.trakt.trakt.LocalBottomBarVisibility
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_BACKGROUND_VIP_IMAGE_URL
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_BACKGROUND_VIP_IMAGE_URL
 import tv.trakt.trakt.common.helpers.LoadingState
 import tv.trakt.trakt.common.helpers.extensions.onClick
 import tv.trakt.trakt.common.helpers.preview.PreviewData
@@ -167,7 +165,7 @@ private fun BillingScreen(
                 if (inspection) {
                     null
                 } else {
-                    Firebase.remoteConfig.getString(MOBILE_BACKGROUND_VIP_IMAGE_URL)
+                    MOBILE_BACKGROUND_VIP_IMAGE_URL
                         .ifBlank { null }
                 }
             },

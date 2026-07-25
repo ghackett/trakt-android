@@ -4,15 +4,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
-import kotlinx.coroutines.flow.first
-import kotlinx.serialization.json.Json
-import timber.log.Timber
-import tv.trakt.trakt.common.auth.session.SessionManager
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_CUSTOM_THEME_ENABLED
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_CUSTOM_THEME_JSON
-import tv.trakt.trakt.common.helpers.extensions.recordError
 import tv.trakt.trakt.ui.theme.model.CustomTheme
 
 internal val KEY_CUSTOM_THEME_USER_ENABLED = booleanPreferencesKey("key_custom_theme_user_enabled")
@@ -21,13 +12,7 @@ internal fun keyCustomThemeUserDismissed(id: String) = booleanPreferencesKey("ke
 
 internal class CustomThemeUseCase(
     private val mainDataStore: DataStore<Preferences>,
-    private val sessionManager: SessionManager,
 ) {
-    private val remoteConfig = Firebase.remoteConfig
-    private val json = Json {
-        explicitNulls = false
-    }
-
     suspend fun toggleUserEnabled(enabled: Boolean) {
         mainDataStore.edit { prefs ->
             prefs[KEY_CUSTOM_THEME_USER_ENABLED] = enabled
@@ -40,35 +25,13 @@ internal class CustomThemeUseCase(
         }
     }
 
+    // Seasonal themes were driven by Firebase Remote Config, which this fork
+    // removes, so no custom theme is ever active.
     suspend fun getConfig(): CustomThemeConfig {
-        val isConfigEnabled = remoteConfig.getBoolean(MOBILE_CUSTOM_THEME_ENABLED)
-        val isUserLoggedIn = sessionManager.isAuthenticated()
-        val isUserEnabled = mainDataStore.data.first()[KEY_CUSTOM_THEME_USER_ENABLED] ?: true
-
-        val configThemeJson = remoteConfig.getString(MOBILE_CUSTOM_THEME_JSON)
-        val configTheme: CustomTheme? = try {
-            if (configThemeJson.isNotBlank()) {
-                json.decodeFromString(configThemeJson)
-            } else {
-                null
-            }
-        } catch (error: Exception) {
-            Timber.recordError(error)
-            null
-        }
-
-        val isUserOverlayDismissed = if (configTheme != null) {
-            val prefs = mainDataStore.data.first()
-            prefs[keyCustomThemeUserDismissed(configTheme.id)] ?: false
-        } else {
-            false
-        }
-
         return CustomThemeConfig(
-            visible = isConfigEnabled && isUserLoggedIn,
-            overlayVisible = !isUserOverlayDismissed && isConfigEnabled && isUserLoggedIn,
-            enabled = isUserEnabled && isConfigEnabled && isUserLoggedIn,
-            theme = configTheme,
+            visible = false,
+            overlayVisible = false,
+            enabled = false,
         )
     }
 

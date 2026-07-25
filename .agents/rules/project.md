@@ -22,7 +22,7 @@ Trakt Android codebase. Phone + Android TV, Compose-first, Kotlin 2.x, Gradle KT
 - **Persistence**: DataStore (Preferences) + entity caches. No SharedPreferences in new code, no Realm, no SQLDelight.
 - **Images**: Coil 3 (`io.coil-kt.coil3`) with Ktor 3 engine adapter and SVG decoder.
 - **Serialization**: kotlinx.serialization for protobuf and typed navigation routes; Moshi for OpenAPI-generated DTOs.
-- **Firebase**: Crashlytics, Analytics, Remote Config (seasonal themes + feature flags).
+- **No Firebase**: this fork removed Crashlytics, Analytics, and Remote Config. Static config lives in `common/.../config/AppConfig.kt`; analytics is a Timber-logging no-op.
 - **Media**: Media3 (ExoPlayer) for video; `youtube-player` (thirdspark) for embedded trailers.
 - **Logging**: Timber.
 
@@ -43,7 +43,7 @@ trakt-android/
 ├── common/              # com.android.library — domain, networking, DI
 │   └── src/main/java/tv/trakt/trakt/common/
 │       ├── networking/      # Ktor client factory, interceptors
-│       ├── firebase/
+│       ├── analytics/
 │       ├── helpers/
 │       ├── di/              # Koin modules wired in TraktApplication
 │       └── ui/              # cross-platform Compose primitives
@@ -113,7 +113,7 @@ chore(i18n): translations updates from CrowdIn
 
 - All visual values via `TraktTheme.*` tokens.
 - Material 3 base with `TraktTheme` overlays for colours and typography.
-- Light/dark + seasonal theme overrides (Halloween → orange, Christmas → red) flow through Firebase Remote Config + `CustomThemeUseCase` — wired in `MainActivity`.
+- Light/dark themes via `TraktTheme`. Seasonal overrides were Remote Config-driven and are disabled in this fork.
 - Images via Coil 3 + Trakt placeholders; do not introduce Glide / Fresco.
 
 ## Logging
@@ -122,7 +122,7 @@ chore(i18n): translations updates from CrowdIn
 - **Lazy formatting**: `Timber.d("user=%s", user.id)` — Timber elides formatting when log level disabled. Never `Timber.d("user=" + user.id)` or string-interpolation (`Timber.d("user=${user.id}")`) for messages built every call.
 - **Tag implicitly** via calling class. Avoid `Timber.tag("X")` except inside helper utilities that lose class context.
 - **Never log secrets, tokens, OAuth codes, refresh tokens, or request/response bodies** that may include any. Trakt IDs (movie IDs, show IDs, slugs, list IDs) safe to log. User emails / display names **not** — PII.
-- `Timber.plant()` only in debug builds; release builds plant Crashlytics tree forwarding `WARN`+ to Firebase Crashlytics. Wired in `TraktApplication.setupTimber()`.
+- `Timber.plant()` only in debug builds; release builds plant no tree. Wired in `TraktApplication.setupTimber()`.
 
 ## Tooling
 
@@ -131,4 +131,4 @@ chore(i18n): translations updates from CrowdIn
 - **Lint**: `./gradlew ktlintCheck` (gated by `.github/workflows/master.yml` ktlint job).
 - **OpenAPI regeneration**: `./gradlew openApiGenerate` rebuilds client from `openapi/openapi.json` — committed generated sources stay in step.
 - **i18n sync**: Crowdin → `resources/src/main/res/values-*/strings.xml` via `.github/workflows/i18n_sync.yml`.
-- **Releases**: Fastlane (`fastlane/`) — 7 lanes covering Firebase distribution + Play Store internal/beta/production tracks.
+- **Releases**: Fastlane (`fastlane/`) — lanes covering Play Store internal/beta/production tracks.

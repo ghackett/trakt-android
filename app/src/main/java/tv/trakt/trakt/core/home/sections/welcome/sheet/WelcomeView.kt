@@ -43,10 +43,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import tv.trakt.trakt.common.Config
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_BACKGROUND_VIP_IMAGE_URL
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_BACKGROUND_VIP_IMAGE_URL
 import tv.trakt.trakt.common.helpers.extensions.onClick
 import tv.trakt.trakt.common.ui.theme.colors.Purple500
 import tv.trakt.trakt.common.ui.theme.colors.Purple600
@@ -117,7 +115,7 @@ internal fun WelcomeView(
                     if (preview) {
                         null
                     } else {
-                        Firebase.remoteConfig.getString(MOBILE_BACKGROUND_VIP_IMAGE_URL)
+                        MOBILE_BACKGROUND_VIP_IMAGE_URL
                             .ifBlank { null }
                     }
                 },

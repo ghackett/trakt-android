@@ -15,22 +15,6 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Android
 
-### android firebase_distribute_me
-
-```sh
-[bundle exec] fastlane android firebase_distribute_me
-```
-
-Distribute Firebase version to me only
-
-### android firebase_distribute_internal
-
-```sh
-[bundle exec] fastlane android firebase_distribute_internal
-```
-
-Distribute Firebase version to Internal Testers group
-
 ### android playstore_upload_internal
 
 ```sh

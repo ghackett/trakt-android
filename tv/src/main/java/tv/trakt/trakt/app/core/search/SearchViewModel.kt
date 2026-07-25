@@ -2,8 +2,6 @@ package tv.trakt.trakt.app.core.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -24,9 +22,9 @@ import tv.trakt.trakt.app.core.search.usecase.GetSearchResultsUseCase
 import tv.trakt.trakt.app.core.search.usecase.recents.AddRecentSearchUseCase
 import tv.trakt.trakt.app.core.search.usecase.recents.GetRecentSearchUseCase
 import tv.trakt.trakt.app.core.shows.usecase.GetTrendingShowsUseCase
+import tv.trakt.trakt.common.config.AppConfig.BACKGROUND_IMAGE_URL
 import tv.trakt.trakt.common.core.movies.data.local.MovieLocalDataSource
 import tv.trakt.trakt.common.core.shows.data.local.ShowLocalDataSource
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.BACKGROUND_IMAGE_URL
 import tv.trakt.trakt.common.helpers.extensions.asyncMap
 import tv.trakt.trakt.common.helpers.extensions.rethrowCancellation
 import tv.trakt.trakt.common.model.Movie
@@ -61,7 +59,7 @@ internal class SearchViewModel(
     }
 
     private fun loadBackground() {
-        val configUrl = Firebase.remoteConfig.getString(BACKGROUND_IMAGE_URL)
+        val configUrl = BACKGROUND_IMAGE_URL
         backgroundState.update { configUrl }
     }
 

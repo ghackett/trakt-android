@@ -1,9 +1,9 @@
-package tv.trakt.trakt.common.firebase.analytics.implementation
+package tv.trakt.trakt.common.analytics.implementation
 
 import timber.log.Timber
-import tv.trakt.trakt.common.firebase.analytics.Analytics
+import tv.trakt.trakt.common.analytics.Analytics
 
-internal class DebugAnalytics(
+internal class LogAnalytics(
     override val reactions: Analytics.Reactions,
     override val ratings: Analytics.Ratings,
     override val comments: Analytics.Comments,
@@ -36,7 +36,7 @@ internal class DebugAnalytics(
     }
 }
 
-internal class DebugAnalyticsReactions : Analytics.Reactions {
+internal class LogAnalyticsReactions : Analytics.Reactions {
     override fun logReactionAdd(
         reaction: String,
         source: String,
@@ -49,7 +49,7 @@ internal class DebugAnalyticsReactions : Analytics.Reactions {
     }
 }
 
-internal class DebugAnalyticsRatings : Analytics.Ratings {
+internal class LogAnalyticsRatings : Analytics.Ratings {
     override fun logRatingAdd(
         rating: Int,
         mediaType: String,
@@ -73,7 +73,7 @@ internal class DebugAnalyticsRatings : Analytics.Ratings {
     }
 }
 
-internal class DebugAnalyticsComments : Analytics.Comments {
+internal class LogAnalyticsComments : Analytics.Comments {
     override fun logCommentAdd(mediaType: String) {
         Timber.d("logCommentAdd: mediaType=${mediaType.lowercase()}")
     }
@@ -91,7 +91,7 @@ internal class DebugAnalyticsComments : Analytics.Comments {
     }
 }
 
-internal class DebugAnalyticsProgress : Analytics.Progress {
+internal class LogAnalyticsProgress : Analytics.Progress {
     override fun logAddWatchedMedia(
         mediaType: String,
         source: String,
@@ -125,13 +125,13 @@ internal class DebugAnalyticsProgress : Analytics.Progress {
     }
 }
 
-internal class DebugAnalyticsTrivia : Analytics.Trivia {
+internal class LogAnalyticsTrivia : Analytics.Trivia {
     override fun logScreenView(source: String) {
         Timber.d("logTriviaScreenView: source=$source")
     }
 }
 
-internal class DebugAnalyticsPlayback : Analytics.Playback {
+internal class LogAnalyticsPlayback : Analytics.Playback {
     override fun logPlaybackStart(mediaType: String) {
         Timber.d("logPlaybackStart: mediaType=${mediaType.lowercase()}")
     }

@@ -1,49 +1,6 @@
 default_platform(:android)
 
 platform :android do
-  desc "Distribute Firebase version to me only"
-  lane :firebase_distribute_me do
-    gradle(
-      task: "assembleInternalRelease"
-    )
-
-    # Ensure using mike@trakt.tv for this project
-    begin
-      sh("firebase login:use mike@trakt.tv")
-    rescue
-      # Already using this account, ignore error
-    end
-
-    firebase_app_distribution(
-      app: "1:213753735103:android:13d79e31e4663aea06230a",
-      testers: "michal.drabik0@gmail.com",
-      release_notes: ""
-    )
-  end
-
-  desc "Distribute Firebase version to Internal Testers group"
-  lane :firebase_distribute_internal do
-    # Ask for optional release notes
-    release_notes = UI.input("Enter release notes (optional, press Enter to skip): ") || ""
-
-    gradle(
-      task: "assembleInternalRelease"
-    )
-
-    # Ensure using mike@trakt.tv for this project
-    begin
-      sh("firebase login:use mike@trakt.tv")
-    rescue
-      # Already using this account, ignore error
-    end
-
-    firebase_app_distribution(
-      app: "1:213753735103:android:13d79e31e4663aea06230a",
-      groups: "trakt-internal-testers",
-      release_notes: release_notes
-    )
-  end
-
   desc "Upload version to PlayStore Internal Track"
     lane :playstore_upload_internal do
       gradle(

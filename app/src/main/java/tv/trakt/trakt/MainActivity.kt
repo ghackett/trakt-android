@@ -21,8 +21,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import com.jakewharton.processphoenix.ProcessPhoenix
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -31,7 +29,6 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.core.qualifier.named
 import timber.log.Timber
 import tv.trakt.trakt.app.TvSplashActivity
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_CUSTOM_THEME_ENABLED
 import tv.trakt.trakt.common.helpers.extensions.isTelevision
 import tv.trakt.trakt.common.ui.theme.colors.DarkColors
 import tv.trakt.trakt.core.auth.ConfigAuth
@@ -133,11 +130,6 @@ internal class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        updateRemoteConfig()
-    }
-
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         newIntent.value = intent
@@ -147,25 +139,6 @@ internal class MainActivity : AppCompatActivity() {
     @SuppressLint("SourceLockedOrientationActivity")
     private fun setupOrientation() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-    }
-
-    private fun updateRemoteConfig() {
-        with(Firebase.remoteConfig) {
-            val customThemeEnabled = getBoolean(MOBILE_CUSTOM_THEME_ENABLED)
-            this
-                .fetchAndActivate()
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        Timber.d("Remote Config updated: ${it.result}")
-                        if (customThemeEnabled != getBoolean(MOBILE_CUSTOM_THEME_ENABLED)) {
-                            // Reload app to apply custom theme change.
-                            ProcessPhoenix.triggerRebirth(this@MainActivity)
-                        }
-                    } else {
-                        Timber.e("Remote Config update failed!")
-                    }
-                }
-        }
     }
 
     private fun handleTraktAuthorization(authData: Uri?) {

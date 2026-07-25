@@ -69,11 +69,6 @@ dependencies {
     implementation(libs.bundles.androidx.media3)
     implementation(libs.androidx.work)
 
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.config)
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.crashlytics)
-
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.client.logger)

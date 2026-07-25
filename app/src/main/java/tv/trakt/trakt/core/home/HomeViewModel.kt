@@ -2,8 +2,6 @@ package tv.trakt.trakt.core.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,10 +14,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import tv.trakt.trakt.common.analytics.Analytics
 import tv.trakt.trakt.common.auth.session.SessionManager
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_WELCOME_BANNER_ENABLED
 import tv.trakt.trakt.common.core.user.CollectionStateProvider
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_WELCOME_BANNER_ENABLED
-import tv.trakt.trakt.common.firebase.analytics.Analytics
 import tv.trakt.trakt.common.helpers.LoadingState
 import tv.trakt.trakt.common.helpers.extensions.recordError
 import tv.trakt.trakt.common.helpers.extensions.rethrowCancellation
@@ -84,7 +82,7 @@ internal class HomeViewModel(
     fun loadData() {
         viewModelScope.launch {
             try {
-                val enabled = Firebase.remoteConfig.getBoolean(MOBILE_WELCOME_BANNER_ENABLED)
+                val enabled = MOBILE_WELCOME_BANNER_ENABLED
                 val dismissed = dismissWelcomeUseCase.isDismissed()
                 if (enabled && !dismissed) {
                     val isAuthenticated = sessionManager.isAuthenticated()

@@ -6,8 +6,8 @@ import org.openapitools.client.infrastructure.ApiClient
 import tv.trakt.trakt.app.core.search.data.local.RecentSearchLocalDataSource
 import tv.trakt.trakt.app.core.sync.data.local.episodes.EpisodesSyncLocalDataSource
 import tv.trakt.trakt.app.core.sync.data.local.shows.ShowsSyncLocalDataSource
+import tv.trakt.trakt.common.analytics.Analytics
 import tv.trakt.trakt.common.auth.session.SessionManager
-import tv.trakt.trakt.common.firebase.analytics.Analytics
 
 internal class LogoutProfileUseCase(
     private val apiClients: Array<ApiClient>,

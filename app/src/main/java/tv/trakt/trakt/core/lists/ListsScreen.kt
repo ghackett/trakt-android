@@ -44,12 +44,10 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastRoundToInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import tv.trakt.trakt.LocalStartAuthorization
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_EMPTY_IMAGE_2
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_EMPTY_IMAGE_3
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_EMPTY_IMAGE_4
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_EMPTY_IMAGE_2
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_EMPTY_IMAGE_3
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_EMPTY_IMAGE_4
 import tv.trakt.trakt.common.helpers.LoadingState.Done
 import tv.trakt.trakt.common.helpers.LoadingState.Loading
 import tv.trakt.trakt.common.helpers.extensions.onClick
@@ -463,9 +461,9 @@ private fun ContentEmptyView(
     val imageUrl = remember(inspection, filter) {
         when {
             inspection -> null
-            filter == Personal -> Firebase.remoteConfig.getString(MOBILE_EMPTY_IMAGE_3).ifBlank { null }
-            filter == Liked -> Firebase.remoteConfig.getString(MOBILE_EMPTY_IMAGE_4).ifBlank { null }
-            filter == Collaborations -> Firebase.remoteConfig.getString(MOBILE_EMPTY_IMAGE_2).ifBlank { null }
+            filter == Personal -> MOBILE_EMPTY_IMAGE_3.ifBlank { null }
+            filter == Liked -> MOBILE_EMPTY_IMAGE_4.ifBlank { null }
+            filter == Collaborations -> MOBILE_EMPTY_IMAGE_2.ifBlank { null }
             else -> null
         }
     }
