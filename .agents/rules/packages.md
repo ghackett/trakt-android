@@ -119,7 +119,7 @@ Per-module setup:
 
 ## Formatting pipeline
 
-Today: `ktlint` via `./gradlew ktlintFormat` / `ktlintCheck`, wired into CI through `.github/workflows/master.yml`.
+Today: `ktlint` via `./gradlew ktlintFormat` / `ktlintCheck`, wired into CI through `.github/workflows/build.yml`.
 
 Aspirational: move to **Spotless** — formatting, ktlint, license headers, import ordering in one
 pass (both NIA and Tivi do this). Until migrated, honour `.editorconfig` rules and run ktlint before

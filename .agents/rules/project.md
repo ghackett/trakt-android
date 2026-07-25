@@ -128,7 +128,7 @@ chore(i18n): translations updates from CrowdIn
 
 - **Build**: `./gradlew :app:assembleDebug`, `./gradlew :tv:assembleDebug`.
 - **Format**: `./gradlew ktlintFormat` (where wired; honour `.editorconfig` ktlint rules).
-- **Lint**: `./gradlew ktlintCheck` (gated by `.github/workflows/master.yml` ktlint job).
+- **Lint**: `./gradlew ktlintCheck` (gated by the `.github/workflows/build.yml` ktlint job, which runs on PRs and pushes to main).
 - **OpenAPI regeneration**: `./gradlew openApiGenerate` rebuilds client from `openapi/openapi.json` — committed generated sources stay in step.
 - **i18n sync**: Crowdin → `resources/src/main/res/values-*/strings.xml` via `.github/workflows/i18n_sync.yml`.
 - **Releases**: Fastlane (`fastlane/`) — lanes covering Play Store internal/beta/production tracks.
