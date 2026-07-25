@@ -14,6 +14,7 @@ actively apply the corresponding rule file for that domain:
   `ValidateStringPlaceholdersTask`): apply localization.md
 - Gradle module boundaries, `build.gradle.kts` edits, version catalog
   (`gradle/libs.versions.toml`), new external deps: apply packages.md
+- Running Gradle builds locally / fresh-machine setup: apply building.md
 - All other source code: apply project.md, code-principles.md, and
   implementation.md (always-on baseline).
 
@@ -38,5 +39,7 @@ All rule files are referenced below.
 @.agents/rules/theming.md
 
 @.agents/rules/packages.md
+
+@.agents/rules/building.md
 
 @.agents/rules/commits.md
