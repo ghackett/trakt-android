@@ -32,15 +32,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import org.koin.androidx.compose.koinViewModel
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_EMPTY_IMAGE_1
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_EMPTY_IMAGE_2
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_EMPTY_IMAGE_3
 import tv.trakt.trakt.common.core.favorites.FavoriteItem
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_EMPTY_IMAGE_1
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_EMPTY_IMAGE_2
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_EMPTY_IMAGE_3
 import tv.trakt.trakt.common.helpers.LoadingState.Done
 import tv.trakt.trakt.common.helpers.LoadingState.Idle
 import tv.trakt.trakt.common.helpers.LoadingState.Loading
@@ -300,11 +298,10 @@ private fun ContentEmptyView(
     val height = 219.dp
 
     val imageUrls = remember {
-        val remoteConfig = Firebase.remoteConfig
         buildList {
-            add(remoteConfig.getString(MOBILE_EMPTY_IMAGE_1).ifBlank { null })
-            add(remoteConfig.getString(MOBILE_EMPTY_IMAGE_2).ifBlank { null })
-            add(remoteConfig.getString(MOBILE_EMPTY_IMAGE_3).ifBlank { null })
+            add(MOBILE_EMPTY_IMAGE_1.ifBlank { null })
+            add(MOBILE_EMPTY_IMAGE_2.ifBlank { null })
+            add(MOBILE_EMPTY_IMAGE_3.ifBlank { null })
         }
     }
 

@@ -1,8 +1,8 @@
-package tv.trakt.trakt.common.firebase.inappreview.di
+package tv.trakt.trakt.common.inappreview.di
 
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import tv.trakt.trakt.common.firebase.inappreview.RequestAppReviewUseCase
+import tv.trakt.trakt.common.inappreview.RequestAppReviewUseCase
 
 private const val MAIN_PREFERENCES = "main_preferences"
 

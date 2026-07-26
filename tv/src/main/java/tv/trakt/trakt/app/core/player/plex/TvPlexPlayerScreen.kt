@@ -76,7 +76,7 @@ import tv.trakt.trakt.app.core.player.plex.subtitles.model.SubtitleSize
 import tv.trakt.trakt.app.core.scrobble.data.work.PostScrobbleStartWorker
 import tv.trakt.trakt.app.core.scrobble.data.work.PostScrobbleStopWorker
 import tv.trakt.trakt.app.ui.theme.TraktTheme
-import tv.trakt.trakt.common.firebase.analytics.Analytics
+import tv.trakt.trakt.common.analytics.Analytics
 import tv.trakt.trakt.common.helpers.extensions.EmptyImmutableList
 import tv.trakt.trakt.common.helpers.extensions.onClick
 import tv.trakt.trakt.common.model.MediaType

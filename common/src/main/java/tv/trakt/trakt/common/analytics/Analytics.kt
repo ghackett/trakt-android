@@ -1,4 +1,4 @@
-package tv.trakt.trakt.common.firebase.analytics
+package tv.trakt.trakt.common.analytics
 
 /**
  * Analytics interface for logging events.

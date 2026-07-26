@@ -1,12 +1,8 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
 }
-
-private val localProperties = gradleLocalProperties(rootDir, providers)
 
 android {
     namespace = "tv.trakt.trakt.common"
@@ -20,12 +16,12 @@ android {
 
         buildConfigField("int", "VERSION_CODE", versionCode.toString())
         buildConfigField("String", "VERSION_NAME", "\"${versionName}\"")
-        buildConfigField("String", "TRAKT_API_KEY", localProperties.getProperty("TRAKT_API_KEY"))
-        buildConfigField("String", "TRAKT_API_SECRET", localProperties.getProperty("TRAKT_API_SECRET"))
+        buildConfigField("String", "TRAKT_API_KEY", "\"${secretProperty("TRAKT_API_KEY")}\"")
+        buildConfigField("String", "TRAKT_API_SECRET", "\"${secretProperty("TRAKT_API_SECRET")}\"")
         buildConfigField(
             "Boolean",
             "DEBUG_DELAY_ENABLED",
-            localProperties.getProperty("DEBUG_DELAY_ENABLED", false.toString())
+            secretProperty("DEBUG_DELAY_ENABLED", default = false.toString())
         )
 
         consumerProguardFiles("consumer-rules.pro")
@@ -86,11 +82,6 @@ dependencies {
     implementation(libs.ktor.client.serialization)
     implementation(libs.ktor.client.negotiation)
     implementation(libs.ktor.client.auth)
-
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.config)
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.crashlytics)
 
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)

@@ -2,10 +2,6 @@ package tv.trakt.trakt.app.core.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.crashlytics.crashlytics
-import com.google.firebase.remoteconfig.remoteConfig
-import io.ktor.client.plugins.ClientRequestException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,7 +10,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.serialization.SerializationException
 import timber.log.Timber
 import tv.trakt.trakt.app.core.auth.AuthState.LoadingState.LOADING
 import tv.trakt.trakt.app.core.auth.AuthState.LoadingState.REJECTED
@@ -25,9 +20,9 @@ import tv.trakt.trakt.app.core.auth.model.AuthDeviceTokenState.Success
 import tv.trakt.trakt.app.core.auth.usecases.GetDeviceCodeUseCase
 import tv.trakt.trakt.app.core.auth.usecases.GetDeviceTokenUseCase
 import tv.trakt.trakt.app.core.auth.usecases.LoadUserProfileUseCase
+import tv.trakt.trakt.common.analytics.Analytics
 import tv.trakt.trakt.common.auth.session.SessionManager
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.BACKGROUND_IMAGE_URL
-import tv.trakt.trakt.common.firebase.analytics.Analytics
+import tv.trakt.trakt.common.config.AppConfig.BACKGROUND_IMAGE_URL
 import tv.trakt.trakt.common.helpers.extensions.nowUtc
 import tv.trakt.trakt.common.helpers.extensions.rethrowCancellation
 import kotlin.time.Duration
@@ -52,7 +47,7 @@ internal class AuthViewModel(
     }
 
     private fun loadBackground() {
-        val configUrl = Firebase.remoteConfig.getString(BACKGROUND_IMAGE_URL)
+        val configUrl = BACKGROUND_IMAGE_URL
         backgroundState.update { configUrl }
     }
 
@@ -124,29 +119,10 @@ internal class AuthViewModel(
                 error.rethrowCancellation {
                     launch { sessionManager.clear() }
                     errorState.update { error }
-                    logErrorIfNeeded(error)
+                    Timber.e(error, "Error polling device token")
                 }
             }
         }
-    }
-
-    private fun logErrorIfNeeded(error: Exception) {
-        val crashlytics = Firebase.crashlytics
-
-        when (error) {
-            is ClientRequestException -> {
-                val code = error.response.status.value
-                if (code in 500..599 || code in 400..499) {
-                    crashlytics.recordException(error)
-                }
-            }
-
-            is SerializationException -> {
-                crashlytics.recordException(error)
-            }
-        }
-
-        Timber.e(error, "Error polling device token")
     }
 
     val state: StateFlow<AuthState> = combine(

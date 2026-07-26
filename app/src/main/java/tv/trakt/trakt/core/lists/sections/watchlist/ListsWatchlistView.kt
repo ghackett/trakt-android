@@ -32,15 +32,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import org.koin.androidx.compose.koinViewModel
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_EMPTY_IMAGE_1
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_EMPTY_IMAGE_2
 import tv.trakt.trakt.common.core.lists.model.WatchlistItem
 import tv.trakt.trakt.common.core.user.UserCollectionState
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_EMPTY_IMAGE_1
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_EMPTY_IMAGE_2
 import tv.trakt.trakt.common.helpers.LoadingState.Done
 import tv.trakt.trakt.common.helpers.LoadingState.Idle
 import tv.trakt.trakt.common.helpers.LoadingState.Loading
@@ -354,7 +352,7 @@ private fun ContentEmptyView(
             Media, Shows -> MOBILE_EMPTY_IMAGE_1
             Movies -> MOBILE_EMPTY_IMAGE_2
         }
-        Firebase.remoteConfig.getString(key).ifBlank { null }
+        key.ifBlank { null }
     }
 
     val buttonText = remember(filter, authenticated) {

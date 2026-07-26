@@ -77,8 +77,8 @@ named `val` (or a token) for clarity.
 
 ## Seasonal themes
 
-- Halloween (orange), Christmas (red), other overrides flow through Firebase Remote Config +
-  `CustomThemeUseCase`.
+- Halloween (orange), Christmas (red), other overrides used to flow through Firebase Remote
+  Config + `CustomThemeUseCase`; this fork removed Firebase, so seasonal themes are disabled.
 - Theme switching wires at app root (`TraktTheme(colors = customColors ?: DefaultColors) { … }`).
 - Feature code doesn't branch on season — reads `TraktTheme.colors.*`, active palette swaps
   automatically.

@@ -10,7 +10,7 @@ applyTo: '**'
 ## Functional Programming
 
 - **Prefer pure functions.** Same input → same output.
-- **Side effects at edges.** I/O (network, disk, Firebase, analytics) lives in repositories, use-cases, ViewModel collectors — never inside mappers, formatters, composables.
+- **Side effects at edges.** I/O (network, disk, analytics) lives in repositories, use-cases, ViewModel collectors — never inside mappers, formatters, composables.
 - Composables: pure functions of params. State must come from hoisted source (parameter, `CompositionLocal`, `collectAsStateWithLifecycle`).
 
 ## Immutability

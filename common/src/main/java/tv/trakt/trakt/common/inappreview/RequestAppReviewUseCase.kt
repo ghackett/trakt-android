@@ -1,15 +1,14 @@
-package tv.trakt.trakt.common.firebase.inappreview
+package tv.trakt.trakt.common.inappreview
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.longPreferencesKey
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
+import tv.trakt.trakt.common.config.AppConfig
 
 private val KEY_APP_REVIEW_COUNT = longPreferencesKey("key_app_review_count")
 
@@ -23,13 +22,7 @@ class RequestAppReviewUseCase(
         val data = mainDataStore.data.first()
         val count = data[KEY_APP_REVIEW_COUNT] ?: 0L
 
-        val requestCounts = with(Firebase.remoteConfig) {
-            longArrayOf(
-                getLong("in_app_review_count_1"),
-                getLong("in_app_review_count_2"),
-                getLong("in_app_review_count_3"),
-            )
-        }
+        val requestCounts = AppConfig.IN_APP_REVIEW_PROMPT_COUNTS
 
         return (count in requestCounts).also {
             Timber.d("shouldRequest: $it (count = $count) counts = ${requestCounts.joinToString(", ")}")

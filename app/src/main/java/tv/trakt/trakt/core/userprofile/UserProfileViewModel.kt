@@ -6,8 +6,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,6 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import timber.log.Timber
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_THIS_MONTH_IMAGE_URL
 import tv.trakt.trakt.common.core.episodes.data.local.EpisodeLocalDataSource
 import tv.trakt.trakt.common.core.movies.data.local.MovieLocalDataSource
 import tv.trakt.trakt.common.core.shows.data.local.ShowLocalDataSource
@@ -26,7 +25,6 @@ import tv.trakt.trakt.common.core.user.usecases.following.FollowRequestUserUseCa
 import tv.trakt.trakt.common.core.user.usecases.following.FollowUserUseCase
 import tv.trakt.trakt.common.core.user.usecases.following.FollowUserUseCase.Result.Approved
 import tv.trakt.trakt.common.core.user.usecases.following.FollowUserUseCase.Result.RequestPending
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_THIS_MONTH_IMAGE_URL
 import tv.trakt.trakt.common.helpers.DynamicStringResource
 import tv.trakt.trakt.common.helpers.LoadingState
 import tv.trakt.trakt.common.helpers.StringResource
@@ -186,7 +184,7 @@ internal class UserProfileViewModel(
             userMonthState.update {
                 UserProfileState.MonthlyStats(
                     stats = stats,
-                    backgroundUrl = Firebase.remoteConfig.getString(MOBILE_THIS_MONTH_IMAGE_URL),
+                    backgroundUrl = MOBILE_THIS_MONTH_IMAGE_URL,
                     loading = false,
                 )
             }
@@ -209,7 +207,7 @@ internal class UserProfileViewModel(
 
         userMonthState.update {
             UserProfileState.MonthlyStats(
-                backgroundUrl = Firebase.remoteConfig.getString(MOBILE_THIS_MONTH_IMAGE_URL),
+                backgroundUrl = MOBILE_THIS_MONTH_IMAGE_URL,
                 stats = it?.stats,
                 loading = it?.loading ?: true,
             )

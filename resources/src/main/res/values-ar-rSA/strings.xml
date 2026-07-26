@@ -584,8 +584,8 @@
   <string name="dropdown_label_import_source">المصدر</string>
   <string name="dropdown_label_library">مكتبة</string>
   <string name="dropdown_label_person_position">القسم</string>
-  <string name="episode_footer_season_episode">S%1$s • E%2$s</string>
-  <string name="episode_footer_season_episode_range">S%1$s • E%2$s-%3$s</string>
+  <string name="episode_footer_season_episode">S%1$d • E%2$d</string>
+  <string name="episode_footer_season_episode_range">S%1$d • E%2$d-%3$d</string>
   <string name="error_text_404">(لا بأس، حتى أمهر الأبطال يضلّون الطريق أحيانًا.)</string>
   <string name="error_text_delete_account">حدث خطأ أثناء حذف حسابك. يرجى المحاولة مرة أخرى.</string>
   <string name="error_text_email">فشل تحديث البريد الإلكتروني. تأكد من أنه عنوان صالح.</string>
@@ -1499,7 +1499,7 @@
   <string name="text_settings_show_rating_prompt">مطالبات التقييم</string>
   <string name="text_settings_show_rating_prompt_description">يُطلب منك تقييم الأفلام والحلقات بعد المشاهدة.</string>
   <string name="text_settings_translations">ساعد في ترجمة التطبيق وتصحيح الأخطاء للغتك.</string>
-  <string name="text_share_episode">شاهدت للتو %1$s S%2$sE%3$s - %4$s! 🔥</string>
+  <string name="text_share_episode">شاهدت للتو %1$s S%2$dE%3$d - %4$s! 🔥</string>
   <string name="text_share_list">تحقق من قائمة \"%s\" هذه على Trakt! 📋</string>
   <string name="text_share_movie">اكتشفت للتو \"%s\" - أنت بحاجة إلى رؤية هذا! 🎬</string>
   <string name="text_share_person">تحقق من %s على Trakt! 🎭</string>
@@ -1999,7 +1999,7 @@
   <string name="yir_2024_streaming_service_count">عدد الخدمات</string>
   <string name="yir_2024_streaming_title">خدمات البث</string>
   <string name="yir_2024_studio_count">عدد الاستوديو</string>
-  <string name="yir_2024_thanks_copy_directed">لقد قمت بعمل رائع في الإخراج <b>%1$s</b>. إليك تكملة أفضل في <b>%2$s</b>.</string>
+  <string name="yir_2024_thanks_copy_directed">لقد قمت بعمل رائع في الإخراج <b>%1$d</b>. إليك تكملة أفضل في <b>%2$d</b>.</string>
   <string name="yir_2024_thanks_copy_recommend">استمر في رحلتك. حاول مشاهدة أحد هذه العروض أو الأفلام الشهيرة.</string>
   <string name="yir_2024_thanks_intro">ولكن الأهم…</string>
   <string name="yir_2024_thanks_title">شكرًا!</string>
@@ -2063,8 +2063,8 @@
   <string name="yir_title_year_in_review">العام قيد المراجعة</string>
   <string name="yir_title_year_to_date">السنة حتى الآن</string>
   <string name="yir_top_card_description">النوع %s الأكثر مشاهدة بواسطة <b>مجتمع Trakt</b> على الإطلاق. يتم تسليط الضوء على تلك التي شاهدتها.</string>
-  <string name="yir_top_card_description_movies">أفضل الأفلام التي شاهدها <b>مجتمع Trakt</b> على الإطلاق. يتم تمييز الأفلام التي شاهدتها في <b>%1$s → %2$s</b>.</string>
-  <string name="yir_top_card_description_shows">أفضل العروض التي شاهدها <b>مجتمع Trakt</b> على الإطلاق. يتم تمييز العروض التي شاهدتها في <b>%1$s → %2$s</b>.</string>
+  <string name="yir_top_card_description_movies">أفضل الأفلام التي شاهدها <b>مجتمع Trakt</b> على الإطلاق. يتم تمييز الأفلام التي شاهدتها في <b>%1$d → %2$d</b>.</string>
+  <string name="yir_top_card_description_shows">أفضل العروض التي شاهدها <b>مجتمع Trakt</b> على الإطلاق. يتم تمييز العروض التي شاهدتها في <b>%1$d → %2$d</b>.</string>
   <string name="yir_top_card_title_movies">أهم الأفلام</string>
   <string name="yir_top_card_title_shows">أفضل العروض</string>
   <string name="yir_top_your_title_movies">أفضل أفلامك</string>

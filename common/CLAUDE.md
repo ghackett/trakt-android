@@ -7,7 +7,7 @@ Part of the `trakt-android` monorepo. Root rules apply — see
 
 - **Role**: bottom of the dependency graph. Domain models, Ktor /
   OpenAPI networking, repositories, Koin modules, design-system
-  primitives (`TraktTheme`), Firebase wrappers, helpers.
+  primitives (`TraktTheme`), analytics wrappers, helpers.
 - **Plugin**: `com.android.library` + `kotlin.compose`
   + `kotlin.serialization`.
 - **Hard rule**: never imports from `:app` or `:tv`. If a type belongs
@@ -21,8 +21,8 @@ Part of the `trakt-android` monorepo. Root rules apply — see
   - `common/.../<entity>/` — repositories, use-cases, entity caches.
   - `common/.../ui/` — cross-platform Compose primitives.
   - `common/.../di/` — Koin modules wired in `TraktApplication`.
-  - `common/.../firebase/` — Crashlytics, Analytics, Remote Config
-    wrappers.
+  - `common/.../analytics/` — analytics interface + logging
+    implementation.
 - **Generated sources** at `build/generate-resources/...` come from
   the OpenAPI generator — never hand-edited. ktlint already excludes
   them via `.editorconfig`.

@@ -32,10 +32,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import tv.trakt.trakt.common.Config.WEB_ABOUT_US_URL
-import tv.trakt.trakt.common.firebase.FirebaseConfig.RemoteKey.MOBILE_EMPTY_IMAGE_4
+import tv.trakt.trakt.common.config.AppConfig.MOBILE_EMPTY_IMAGE_4
 import tv.trakt.trakt.common.ui.theme.colors.Shade900
 import tv.trakt.trakt.resources.R
 import tv.trakt.trakt.ui.components.buttons.PrimaryButton
@@ -51,7 +49,7 @@ internal fun HomeEmptySocialView(modifier: Modifier = Modifier) {
         if (inspection) {
             null
         } else {
-            Firebase.remoteConfig.getString(MOBILE_EMPTY_IMAGE_4).ifBlank { null }
+            MOBILE_EMPTY_IMAGE_4.ifBlank { null }
         }
     }
 

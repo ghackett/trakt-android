@@ -5,11 +5,6 @@ import android.app.NotificationManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.google.firebase.Firebase
-import com.google.firebase.FirebaseApp
-import com.google.firebase.crashlytics.crashlytics
-import com.google.firebase.remoteconfig.remoteConfig
-import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.jakewharton.processphoenix.ProcessPhoenix
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
@@ -18,18 +13,18 @@ import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 import timber.log.Timber
 import tv.trakt.trakt.app.TvActivity
+import tv.trakt.trakt.common.analytics.di.analyticsModule
 import tv.trakt.trakt.common.auth.di.commonAuthModule
 import tv.trakt.trakt.common.core.translations.di.translationsDataModule
 import tv.trakt.trakt.common.core.translations.di.translationsModule
 import tv.trakt.trakt.common.core.tutorials.di.tutorialsModule
-import tv.trakt.trakt.common.firebase.analytics.di.analyticsModule
-import tv.trakt.trakt.common.firebase.inappreview.di.inAppReviewModule
 import tv.trakt.trakt.common.helpers.coil.coilModule
 import tv.trakt.trakt.common.helpers.coil.registerCoilImageLoader
 import tv.trakt.trakt.common.helpers.extensions.isTelevision
 import tv.trakt.trakt.common.helpers.lifecycle.AppLifecycleProvider
 import tv.trakt.trakt.common.helpers.lifecycle.AppLifecycleProvider.State.BACKGROUND
 import tv.trakt.trakt.common.helpers.lifecycle.AppLifecycleProvider.State.FOREGROUND
+import tv.trakt.trakt.common.inappreview.di.inAppReviewModule
 import tv.trakt.trakt.common.networking.di.networkingApiModule
 import tv.trakt.trakt.common.networking.di.networkingModule
 import tv.trakt.trakt.core.auth.di.authModule
@@ -83,8 +78,6 @@ import tv.trakt.trakt.core.sync.di.syncModule
 import tv.trakt.trakt.core.trivia.di.triviaModule
 import tv.trakt.trakt.core.userprofile.di.userProfileModule
 import tv.trakt.trakt.helpers.player.di.youTubePlayerModule
-import java.util.concurrent.TimeUnit.MINUTES
-import tv.trakt.trakt.common.R as RCommon
 
 internal class TraktApplication : Application() {
     private val appLifecycleProvider by lazy {
@@ -102,29 +95,7 @@ internal class TraktApplication : Application() {
         setupNotificationChannels()
         setupProcessLifecycle()
 
-        FirebaseApp.initializeApp(this)
-        setupFirebaseConfig()
-        setupFirebaseCrashlytics()
-
         registerCoilImageLoader()
-    }
-
-    fun setupFirebaseCrashlytics() {
-        Firebase.crashlytics.isCrashlyticsCollectionEnabled = !BuildConfig.DEBUG
-    }
-
-    fun setupFirebaseConfig() {
-        with(Firebase.remoteConfig) {
-            setDefaultsAsync(RCommon.xml.remote_config_defaults)
-            setConfigSettingsAsync(
-                remoteConfigSettings {
-                    minimumFetchIntervalInSeconds = when {
-                        BuildConfig.DEBUG -> 0
-                        else -> MINUTES.toSeconds(5)
-                    }
-                },
-            )
-        }
     }
 
     fun setupKoin() {
