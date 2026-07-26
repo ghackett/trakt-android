@@ -1,5 +1,5 @@
-import java.util.Properties
 import org.gradle.api.Project
+import java.util.Properties
 
 /**
  * Resolves a secret build property, checking in order:
@@ -12,7 +12,10 @@ import org.gradle.api.Project
  * Surrounding double quotes are stripped so values read identically from every
  * source; call sites that feed a `String` buildConfigField add their own quotes.
  */
-fun Project.secretProperty(name: String, default: String? = null): String {
+fun Project.secretProperty(
+    name: String,
+    default: String? = null,
+): String {
     val value = providers.environmentVariable(name).orNull
         ?: providers.gradleProperty(name).orNull
         ?: rootLocalProperties().getProperty(name)
@@ -24,7 +27,8 @@ fun Project.secretProperty(name: String, default: String? = null): String {
     return value.removeSurrounding("\"")
 }
 
-private fun Project.rootLocalProperties(): Properties = Properties().apply {
-    val file = rootProject.file("local.properties")
-    if (file.exists()) file.inputStream().use(::load)
-}
+private fun Project.rootLocalProperties(): Properties =
+    Properties().apply {
+        val file = rootProject.file("local.properties")
+        if (file.exists()) file.inputStream().use(::load)
+    }
