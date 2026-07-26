@@ -3,9 +3,6 @@
 package tv.trakt.trakt.core.main
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -13,6 +10,7 @@ import com.google.android.play.core.ktx.AppUpdateResult
 import com.google.android.play.core.ktx.requestCompleteUpdate
 import com.google.android.play.core.ktx.requestUpdateFlow
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -45,9 +43,9 @@ import tv.trakt.trakt.common.helpers.extensions.rethrowCancellation
 import tv.trakt.trakt.common.inappreview.RequestAppReviewUseCase
 import tv.trakt.trakt.common.model.User
 import tv.trakt.trakt.common.model.WhatsNew
-import tv.trakt.trakt.core.auth.usecase.AuthorizeUserUseCase
-import tv.trakt.trakt.core.auth.usecase.authCodeKey
-import tv.trakt.trakt.core.auth.usecase.codeVerifierKey
+import tv.trakt.trakt.core.auth.model.DeviceAuthState
+import tv.trakt.trakt.core.auth.usecase.AuthorizeDeviceUseCase
+import tv.trakt.trakt.core.auth.usecase.AuthorizeDeviceUseCase.Progress
 import tv.trakt.trakt.core.checkin.data.CheckInManager
 import tv.trakt.trakt.core.checkin.data.updates.CheckInUpdates.Source
 import tv.trakt.trakt.core.checkin.model.CheckInState
@@ -69,8 +67,7 @@ internal class MainViewModel(
     private val sessionManager: SessionManager,
     private val checkInManager: CheckInManager,
     private val ratePromptManager: RatePromptManager,
-    private val authorizePreferences: DataStore<Preferences>,
-    private val authorizeUseCase: AuthorizeUserUseCase,
+    private val authorizeDeviceUseCase: AuthorizeDeviceUseCase,
     private val loadWhatsNewUseCase: LoadWhatsNewUseCase,
     private val getUserUseCase: LoadUserProfileUseCase,
     private val logoutUseCase: LogoutUserUseCase,
@@ -97,6 +94,9 @@ internal class MainViewModel(
     private val paywallState = MutableStateFlow(initialState.paywall)
     private val updateState = MutableStateFlow(initialState.update)
     private val errorState = MutableStateFlow(initialState.error)
+    private val deviceAuthState = MutableStateFlow(initialState.deviceAuth)
+
+    private var deviceAuthJob: Job? = null
 
     private var lastLoadTime: Instant? = null
 
@@ -107,7 +107,6 @@ internal class MainViewModel(
         observeInAppUpdate()
 
         observeUser()
-        observeAuthCode()
         observeCheckIn()
         observeRatePrompt()
         observeInAppReview()
@@ -127,21 +126,6 @@ internal class MainViewModel(
                 Timber.d("Observed user change: $user")
             }
             .launchIn(viewModelScope)
-    }
-
-    private fun observeAuthCode() {
-        viewModelScope.launch {
-            authorizePreferences.data.collect { preferences ->
-                preferences[authCodeKey]?.let { code ->
-                    val codeVerifier = preferences[codeVerifierKey]
-                    authorizePreferences.edit {
-                        it.remove(authCodeKey)
-                        it.remove(codeVerifierKey)
-                    }
-                    authorizeUser(code, codeVerifier)
-                }
-            }
-        }
     }
 
     private fun observeCheckIn() {
@@ -323,20 +307,51 @@ internal class MainViewModel(
         }
     }
 
-    private fun authorizeUser(
-        code: String,
-        codeVerifier: String?,
-    ) {
+    fun startAuthorization() {
+        if (deviceAuthJob?.isActive == true) return
+
+        deviceAuthJob = viewModelScope.launch {
+            try {
+                deviceAuthState.update { DeviceAuthState.Loading }
+
+                authorizeDeviceUseCase.authorize().collect { progress ->
+                    when (progress) {
+                        is Progress.AwaitingActivation -> deviceAuthState.update {
+                            DeviceAuthState.AwaitingActivation(
+                                userCode = progress.code.userCode,
+                                verificationUrl = progress.code.url,
+                            )
+                        }
+
+                        Progress.Authorized -> {
+                            deviceAuthState.update { null }
+                            onUserAuthorized()
+                        }
+
+                        Progress.Denied -> deviceAuthState.update { DeviceAuthState.Failed }
+                    }
+                }
+            } catch (error: Exception) {
+                error.rethrowCancellation {
+                    deviceAuthState.update { DeviceAuthState.Failed }
+                    Timber.recordError(error)
+                }
+            }
+        }
+    }
+
+    fun cancelAuthorization() {
+        deviceAuthJob?.cancel()
+        deviceAuthState.update { null }
+    }
+
+    private fun onUserAuthorized() {
         viewModelScope.launch {
             try {
                 loadingUserState.update { Loading }
 
                 dismissOnboarding()
 
-                authorizeUseCase.authorizeByCode(
-                    code = code,
-                    codeVerifier = codeVerifier,
-                )
                 getUserUseCase.loadUserProfile()?.let {
                     analytics.setUserId(it.ids.trakt.value.toString())
                     analytics.logUserLogin()
@@ -478,6 +493,7 @@ internal class MainViewModel(
         paywallState,
         updateState,
         errorState,
+        deviceAuthState,
     ) { state ->
         MainState(
             user = state[0] as User?,
@@ -491,6 +507,7 @@ internal class MainViewModel(
             paywall = state[8] as Boolean?,
             update = state[9] as AppUpdateResult?,
             error = state[10] as Exception?,
+            deviceAuth = state[11] as DeviceAuthState?,
         )
     }.stateIn(
         scope = viewModelScope,

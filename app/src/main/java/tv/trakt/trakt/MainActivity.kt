@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -15,29 +14,16 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import com.jakewharton.processphoenix.ProcessPhoenix
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.koinViewModel
-import org.koin.core.qualifier.named
-import timber.log.Timber
 import tv.trakt.trakt.app.TvSplashActivity
 import tv.trakt.trakt.common.helpers.extensions.isTelevision
 import tv.trakt.trakt.common.ui.theme.colors.DarkColors
-import tv.trakt.trakt.core.auth.ConfigAuth
-import tv.trakt.trakt.core.auth.ConfigAuth.OAUTH_REDIRECT_URI
-import tv.trakt.trakt.core.auth.Pkce
-import tv.trakt.trakt.core.auth.di.AUTH_PREFERENCES
-import tv.trakt.trakt.core.auth.usecase.authCodeKey
-import tv.trakt.trakt.core.auth.usecase.codeVerifierKey
 import tv.trakt.trakt.core.main.MainScreen
+import tv.trakt.trakt.core.main.MainViewModel
 import tv.trakt.trakt.core.main.usecases.CustomThemeUseCase
 import tv.trakt.trakt.core.main.usecases.CustomThemeUseCase.CustomThemeConfig
 import tv.trakt.trakt.ui.theme.TraktTheme
@@ -50,9 +36,6 @@ internal val LocalSnackbarState = compositionLocalOf { SnackbarHostState() }
 internal val LocalStartAuthorization = staticCompositionLocalOf { {} }
 
 internal class MainActivity : AppCompatActivity() {
-    private val authPreferences: DataStore<Preferences> by lazy {
-        inject<DataStore<Preferences>>(named(AUTH_PREFERENCES)).value
-    }
     private val newIntent = mutableStateOf<Intent?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +61,6 @@ internal class MainActivity : AppCompatActivity() {
         )
 
         setContent {
-            val scope = rememberCoroutineScope()
             val bottomBarVisibility = remember { mutableStateOf(true) }
             val checkInVisibility = remember { mutableStateOf(true) }
             val ratePromptVisibility = remember { mutableStateOf(true) }
@@ -89,16 +71,9 @@ internal class MainActivity : AppCompatActivity() {
                 }
             }
 
-            val uriHandler = LocalUriHandler.current
-            val startAuthorization = remember(uriHandler) {
-                {
-                    scope.launch {
-                        val codeVerifier = Pkce.generateCodeVerifier()
-                        authPreferences.edit { it[codeVerifierKey] = codeVerifier }
-                        uriHandler.openUri(ConfigAuth.authCodeUrl(codeVerifier))
-                    }
-                    Unit
-                }
+            val mainViewModel: MainViewModel = koinViewModel()
+            val startAuthorization = remember(mainViewModel) {
+                { mainViewModel.startAuthorization() }
             }
 
             TraktTheme(
@@ -121,7 +96,7 @@ internal class MainActivity : AppCompatActivity() {
                     LocalStartAuthorization provides startAuthorization,
                 ) {
                     MainScreen(
-                        viewModel = koinViewModel(),
+                        viewModel = mainViewModel,
                         intent = intent,
                         newIntent = newIntent,
                     )
@@ -133,25 +108,11 @@ internal class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         newIntent.value = intent
-        handleTraktAuthorization(intent.data)
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
     private fun setupOrientation() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-    }
-
-    private fun handleTraktAuthorization(authData: Uri?) {
-        Timber.d("Handling Trakt authorization with data: $authData")
-        if (authData.toString().startsWith(OAUTH_REDIRECT_URI)) {
-            authData?.getQueryParameter("code")?.let { code ->
-                runBlocking {
-                    authPreferences.edit {
-                        it[authCodeKey] = code
-                    }
-                }
-            }
-        }
     }
 
     // Custom Theme

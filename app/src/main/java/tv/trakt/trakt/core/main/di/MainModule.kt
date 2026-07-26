@@ -21,7 +21,6 @@ import tv.trakt.trakt.common.helpers.errors.DefaultGlobalErrorsManager
 import tv.trakt.trakt.common.helpers.errors.GlobalErrorsManager
 import tv.trakt.trakt.common.helpers.lifecycle.AppLifecycleProvider
 import tv.trakt.trakt.common.helpers.lifecycle.DefaultAppLifecycleProvider
-import tv.trakt.trakt.core.auth.di.AUTH_PREFERENCES
 import tv.trakt.trakt.core.home.sections.welcome.usecases.DismissWelcomeBannerUseCase
 import tv.trakt.trakt.core.main.MainViewModel
 import tv.trakt.trakt.core.main.usecases.CustomThemeUseCase
@@ -84,8 +83,7 @@ internal val mainModule = module {
             loadUserWatchlistUseCase = get(),
             loadUserListsUseCase = get(),
             loadUserRatingsUseCase = get(),
-            authorizePreferences = get(named(AUTH_PREFERENCES)),
-            authorizeUseCase = get(),
+            authorizeDeviceUseCase = get(),
             getUserUseCase = get(),
             logoutUseCase = get(),
             dismissWelcomeUseCase = get(),

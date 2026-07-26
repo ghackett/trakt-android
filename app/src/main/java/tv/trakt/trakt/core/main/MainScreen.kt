@@ -89,6 +89,7 @@ import tv.trakt.trakt.common.model.MediaType.Episode
 import tv.trakt.trakt.common.model.MediaType.Movie
 import tv.trakt.trakt.common.model.WhatsNew
 import tv.trakt.trakt.common.model.toTraktId
+import tv.trakt.trakt.core.auth.components.DeviceAuthSheet
 import tv.trakt.trakt.core.billing.navigation.navigateToBilling
 import tv.trakt.trakt.core.checkin.model.CheckInState.ActiveEpisode
 import tv.trakt.trakt.core.checkin.model.CheckInState.ActiveMovie
@@ -286,6 +287,12 @@ internal fun MainScreen(
                 whatsNewState = null
             }
         },
+    )
+
+    DeviceAuthSheet(
+        state = state.deviceAuth,
+        onRetry = viewModel::startAuthorization,
+        onDismiss = viewModel::cancelAuthorization,
     )
 
     RemoveConfirmationSheet(
