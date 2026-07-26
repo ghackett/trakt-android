@@ -1,4 +1,3 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import java.util.Properties
 
 plugins {
@@ -7,7 +6,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-private val localProperties = gradleLocalProperties(rootDir, providers)
 private val resourcesProperties = Properties().apply {
     load(file("src/main/res/resources.properties").inputStream())
 }
@@ -36,9 +34,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "TRAKT_API_KEY", localProperties.getProperty("TRAKT_API_KEY"))
-        buildConfigField("String", "TRAKT_API_SECRET", localProperties.getProperty("TRAKT_API_SECRET"))
-        buildConfigField("String", "YOUNIFY_API_KEY", localProperties.getProperty("YOUNIFY_API_KEY"))
+        buildConfigField("String", "TRAKT_API_KEY", "\"${secretProperty("TRAKT_API_KEY")}\"")
+        buildConfigField("String", "TRAKT_API_SECRET", "\"${secretProperty("TRAKT_API_SECRET")}\"")
+        buildConfigField("String", "YOUNIFY_API_KEY", "\"${secretProperty("YOUNIFY_API_KEY")}\"")
         buildConfigField("int", "VERSION_CODE", versionCode.toString())
         buildConfigField("String", "VERSION_NAME", "\"${versionName}\"")
         buildConfigField("String[]", "SUPPORTED_LOCALES", supportedLocalesBuildConfig)
@@ -50,9 +48,9 @@ android {
 
     signingConfigs {
         val keystoreFile = rootProject.file("keystore.jks")
-        val keystorePassword: String = localProperties.getProperty("KEYSTORE_PASSWORD")
-        val keystoreAlias: String = localProperties.getProperty("KEYSTORE_ALIAS")
-        val keystoreKeyPassword: String = localProperties.getProperty("KEYSTORE_KEY_PASSWORD")
+        val keystorePassword: String = secretProperty("KEYSTORE_PASSWORD")
+        val keystoreAlias: String = secretProperty("KEYSTORE_ALIAS")
+        val keystoreKeyPassword: String = secretProperty("KEYSTORE_KEY_PASSWORD")
 
         create("release") {
             storeFile = keystoreFile

@@ -1,12 +1,8 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
 }
-
-private val localProperties = gradleLocalProperties(rootDir, providers)
 
 android {
     namespace = "tv.trakt.trakt.app"
@@ -15,8 +11,8 @@ android {
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
 
-        buildConfigField("String", "TRAKT_API_KEY", localProperties.getProperty("TRAKT_API_KEY"))
-        buildConfigField("String", "TRAKT_API_SECRET", localProperties.getProperty("TRAKT_API_SECRET"))
+        buildConfigField("String", "TRAKT_API_KEY", "\"${secretProperty("TRAKT_API_KEY")}\"")
+        buildConfigField("String", "TRAKT_API_SECRET", "\"${secretProperty("TRAKT_API_SECRET")}\"")
 
         buildConfigField("int", "VERSION_CODE", libs.versions.versionCode.get())
         buildConfigField("String", "VERSION_NAME", "\"${libs.versions.versionName.get()}\"")

@@ -5,20 +5,25 @@ before diagnosing a build failure as a code problem.
 
 ## One-time setup
 
-- **`local.properties`** at the repo root must define (quoted values for the
-  `String` build config fields):
+- **Secrets** — the build needs these six values:
 
   ```properties
-  TRAKT_API_KEY="..."
-  TRAKT_API_SECRET="..."
-  YOUNIFY_API_KEY="..."
+  TRAKT_API_KEY=...
+  TRAKT_API_SECRET=...
+  YOUNIFY_API_KEY=...
   KEYSTORE_ALIAS=...
   KEYSTORE_KEY_PASSWORD=...
   KEYSTORE_PASSWORD=...
   ```
 
+  Each is resolved by `secretProperty(...)` (in `buildSrc`), checking in
+  order: environment variable → Gradle property (`-P` or
+  `~/.gradle/gradle.properties`) → `local.properties` at the repo root.
+  Values may be plain or wrapped in double quotes — quotes are stripped on
+  read, so the same value works from any source.
+
   Placeholder values are enough to compile; real Trakt keys are only needed
-  for the app to sign in. The file is gitignored — never commit it.
+  for the app to sign in. `local.properties` is gitignored — never commit it.
 
 - **Generate the OpenAPI client**: run `./gradlew openApiGenerate` once on a
   fresh checkout. The generated client lands in `build/generate-resources/`
