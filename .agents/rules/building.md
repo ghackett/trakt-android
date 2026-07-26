@@ -50,14 +50,3 @@ before diagnosing a build failure as a code problem.
   `playstore`), roughly doubling compile time. `:app` depends on `:tv`, so
   the TV module compiles as part of any app build.
 - APKs land in `app/build/outputs/apk/<flavor>/debug/`.
-
-## Known failure on main
-
-`:resources:validateStringPlaceholders` fails due to pre-existing placeholder
-type mismatches in `values-ar-rSA` (Crowdin-owned translation files — do not
-hand-edit them; see `localization.md`). Until fixed upstream in Crowdin, skip
-the task:
-
-```bash
-./gradlew :app:assembleDebug -x :resources:validateStringPlaceholders
-```
