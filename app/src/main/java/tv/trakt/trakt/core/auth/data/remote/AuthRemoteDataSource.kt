@@ -1,10 +1,10 @@
 package tv.trakt.trakt.core.auth.data.remote
 
-import tv.trakt.trakt.common.auth.model.TraktAccessToken
+import tv.trakt.trakt.core.auth.model.AuthDeviceCode
+import tv.trakt.trakt.core.auth.model.AuthDeviceTokenState
 
 internal interface AuthRemoteDataSource {
-    suspend fun getAccessToken(
-        code: String,
-        codeVerifier: String?,
-    ): TraktAccessToken
+    suspend fun getDeviceCode(): AuthDeviceCode
+
+    suspend fun getDeviceToken(deviceCode: String): AuthDeviceTokenState
 }

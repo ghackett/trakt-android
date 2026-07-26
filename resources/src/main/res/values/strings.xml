@@ -305,6 +305,7 @@
   <string name="button_text_continue">Continue</string>
   <string name="button_text_cookie_accept">Accept all</string>
   <string name="button_text_cookie_accept_functional_only">Functional only</string>
+  <string name="button_text_copy_open_trakt_mobile">Copy Code &amp; Open Trakt</string>
   <string name="button_text_create">Create</string>
   <string name="button_text_create_list">List</string>
   <string name="button_text_cta_create_list">Create list</string>
@@ -633,6 +634,7 @@
   <string name="header_details">Details</string>
   <string name="header_device_auth_code_instruction">and enter the following code:</string>
   <string name="header_device_auth_qr_instruction">Scan the QR code, or sign in at:</string>
+  <string name="header_device_auth_title_mobile">Sign in to Trakt</string>
   <string name="header_device_auth_try_again">The activation was denied, expired, or something unforeseeable happened. Please try again.</string>
   <string name="header_director">Director</string>
   <string name="header_display">Display</string>
@@ -1313,6 +1315,8 @@
   <string name="text_data_syncs_count_before">Data has synced</string>
   <string name="text_data_syncs_recent_before">Most recent sync was</string>
   <string name="text_deleted_username">Deleted</string>
+  <string name="text_device_auth_instruction_mobile">Enter this code on the Trakt activation page to sign in:</string>
+  <string name="text_device_auth_waiting_mobile">Waiting for approval…</string>
   <string name="text_directed_by">Directed by <a>%s</a></string>
   <string name="text_directed_by_plain">Directed by %s</string>
   <string name="text_directed_by_short">Directed by</string>

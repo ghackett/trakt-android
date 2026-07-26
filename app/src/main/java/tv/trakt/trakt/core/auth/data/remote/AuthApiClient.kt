@@ -1,42 +1,61 @@
 package tv.trakt.trakt.core.auth.data.remote
 
-import io.ktor.client.HttpClient
-import io.ktor.client.HttpClientConfig
-import io.ktor.client.call.body
-import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.request.url
+import io.ktor.client.plugins.ResponseException
+import org.openapitools.client.apis.OauthApi
+import org.openapitools.client.models.PostOauthDeviceCodeRequest
+import org.openapitools.client.models.PostOauthDeviceTokenRequest
 import tv.trakt.trakt.common.BuildConfig
 import tv.trakt.trakt.common.auth.model.TraktAccessToken
-import tv.trakt.trakt.core.auth.ConfigAuth
-import tv.trakt.trakt.core.auth.data.remote.model.TokenExchangeRequest
+import tv.trakt.trakt.common.helpers.extensions.nowUtc
+import tv.trakt.trakt.common.helpers.extensions.rethrowCancellation
+import tv.trakt.trakt.core.auth.model.AuthDeviceCode
+import tv.trakt.trakt.core.auth.model.AuthDeviceTokenCode
+import tv.trakt.trakt.core.auth.model.AuthDeviceTokenState
+import tv.trakt.trakt.core.auth.model.AuthDeviceTokenState.Failure
+import tv.trakt.trakt.core.auth.model.AuthDeviceTokenState.Success
+import kotlin.time.Duration.Companion.seconds
 
 internal class AuthApiClient(
-    private val baseUrl: String,
-    httpClientEngine: HttpClientEngine,
-    httpClientConfig: ((HttpClientConfig<*>) -> Unit),
+    private val api: OauthApi,
 ) : AuthRemoteDataSource {
-    private val httpClient = HttpClient(httpClientEngine) {
-        httpClientConfig.invoke(this)
+    override suspend fun getDeviceCode(): AuthDeviceCode {
+        val request = PostOauthDeviceCodeRequest(
+            clientId = BuildConfig.TRAKT_API_KEY,
+        )
+        val response = api.postOauthDeviceCode(request).body()
+        return AuthDeviceCode(
+            deviceCode = response.deviceCode,
+            userCode = response.userCode,
+            expiresIn = response.expiresIn.seconds,
+            expiresAt = nowUtc().plusSeconds(response.expiresIn.toLong()),
+            interval = response.interval.seconds,
+            url = response.verificationUrl,
+        )
     }
 
-    override suspend fun getAccessToken(
-        code: String,
-        codeVerifier: String?,
-    ): TraktAccessToken {
-        val request = TokenExchangeRequest(
-            code = code,
+    override suspend fun getDeviceToken(deviceCode: String): AuthDeviceTokenState {
+        val request = PostOauthDeviceTokenRequest(
+            code = deviceCode,
             clientId = BuildConfig.TRAKT_API_KEY,
             clientSecret = BuildConfig.TRAKT_API_SECRET,
-            redirectUri = ConfigAuth.OAUTH_REDIRECT_URI,
-            codeVerifier = codeVerifier,
-            grantType = "authorization_code",
         )
 
-        return httpClient.post {
-            url("${baseUrl}oauth/token")
-            setBody(request)
-        }.body<TraktAccessToken>()
+        try {
+            val response = api.postOauthDeviceToken(request)
+            val body = response.body()
+            val token = TraktAccessToken(
+                accessToken = body.accessToken,
+                expiresIn = body.expiresIn.toLong(),
+                refreshToken = body.refreshToken,
+                createdAt = body.createdAt.toLong(),
+            )
+            return Success(token)
+        } catch (error: Exception) {
+            error.rethrowCancellation()
+            val httpCode = (error as? ResponseException)?.response?.status?.value ?: 0
+            return Failure(
+                code = AuthDeviceTokenCode.fromHttpCode(httpCode),
+            )
+        }
     }
 }
