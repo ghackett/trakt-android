@@ -96,6 +96,7 @@ internal fun HttpClientConfig<*>.applyConfig(
             BuildConfig.DEBUG -> LogLevel.ALL
             else -> LogLevel.NONE
         }
+        sanitizeHeader { header -> header == HttpHeaders.Authorization }
     }
 
     install(CacheBusterPlugin) {

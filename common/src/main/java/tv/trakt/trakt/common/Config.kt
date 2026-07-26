@@ -3,8 +3,11 @@ package tv.trakt.trakt.common
 object Config {
     const val DEFAULT_COUNTRY_CODE: String = "us"
 
-    const val API_BASE_URL: String = "https://apiz.trakt.tv/"
-    const val API_V3_BASE_URL: String = "https://apiz.trakt.tv/v3/"
+    // The official app uses apiz.trakt.tv, which rejects non-official client ids
+    // with 403. The public api.trakt.tv host serves the same routes (including
+    // /v3/ and up_next_nitro) and accepts any registered client.
+    const val API_BASE_URL: String = "https://api.trakt.tv/"
+    const val API_V3_BASE_URL: String = "https://api.trakt.tv/v3/"
     const val PLEX_BASE_URL: String = "https://watch.plex.tv/"
 
     const val WEB_V3_BASE_URL: String = "https://app.trakt.tv/"
